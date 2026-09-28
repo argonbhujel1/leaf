@@ -1,0 +1,118 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('public.home') }}">Home</a><span>/</span>Contact
+    </div>
+    <h1>Contact Us</h1>
+    <p>{{ intro.content if intro else 'We welcome business inquiries and partnership opportunities.' }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Contact Info -->
+      <div class="contact-info-card">
+        <h3>Contact Information</h3>
+        {% if contact_address %}
+        <div class="contact-item">
+          <div>
+            <strong>Address</strong>
+            {{ contact_address }}
+          </div>
+        </div>
+        {% endif %}
+        {% if contact_phone %}
+        <div class="contact-item">
+          <div>
+            <strong>Phone</strong>
+            <a href="tel:{{ contact_phone }}">{{ contact_phone }}</a>
+          </div>
+        </div>
+        {% endif %}
+        {% if contact_email %}
+        <div class="contact-item">
+          <div>
+            <strong>Email</strong>
+            <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+          </div>
+        </div>
+        {% endif %}
+        {% if contact_hours %}
+        <div class="contact-item">
+          <div>
+            <strong>Business Hours</strong>
+            {{ contact_hours }}
+          </div>
+        </div>
+        {% endif %}
+        {% if not contact_address and not contact_phone and not contact_email %}
+        <p style="color:var(--text-muted);font-size:0.9rem;">Contact details can be updated through the admin panel.</p>
+        {% endif %}
+
+        {% if google_maps %}
+        <div style="margin-top:24px;border-radius:var(--radius);overflow:hidden;">
+          {{ google_maps | safe }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Inquiry Form -->
+      <div>
+        <h2 class="section-title" style="font-size:1.4rem;">Business Inquiry</h2>
+        <p style="color:var(--text-muted);margin-bottom:24px;">Fill out the form below and we will get back to you.</p>
+        
+        <form method="POST" action="{{ url_for('public.contact') }}" novalidate>
+          {{ form.hidden_tag() }}
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Name *</label>
+              {{ form.name(id='name', placeholder='Your full name') }}
+              {% if form.name.errors %}<div class="error">{{ form.name.errors[0] }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="company">Company</label>
+              {{ form.company(id='company', placeholder='Company name') }}
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email *</label>
+              {{ form.email(id='email', placeholder='your@email.com') }}
+              {% if form.email.errors %}<div class="error">{{ form.email.errors[0] }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              {{ form.phone(id='phone', placeholder='Phone number') }}
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="product_service">Product / Service</label>
+              {{ form.product_service(id='product_service', placeholder='Product or service of interest') }}
+            </div>
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              {{ form.quantity(id='quantity', placeholder='Estimated quantity') }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Message *</label>
+            {{ form.message(id='message', placeholder='Tell us about your requirements...') }}
+            {% if form.message.errors %}<div class="error">{{ form.message.errors[0] }}</div>{% endif %}
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-lg">Submit Inquiry</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

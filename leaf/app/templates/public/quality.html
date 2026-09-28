@@ -1,0 +1,57 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('public.home') }}">Home</a><span>/</span>Quality
+    </div>
+    <h1>Quality</h1>
+    <p>Our approach to quality inspection, grading, and product verification.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="content-block">
+      <h2>{{ intro_section.title if intro_section else 'Our Quality Approach' }}</h2>
+      <p>{{ intro or (intro_section.content if intro_section else '') }}</p>
+    </div>
+
+    <div class="grid-2" style="margin-top:48px;">
+      <div class="value-card" style="text-align:left;padding:32px;">
+        <h4>Quality Inspection</h4>
+        <p>Products undergo systematic inspection as part of our manufacturing workflow to help maintain expected standards.</p>
+      </div>
+      <div class="value-card" style="text-align:left;padding:32px;">
+        <h4>Product Grading</h4>
+        <p>Grading processes help classify products according to defined quality criteria.</p>
+      </div>
+      <div class="value-card" style="text-align:left;padding:32px;">
+        <h4>Defect Inspection</h4>
+        <p>We check for defects to support consistent product quality.</p>
+      </div>
+      <div class="value-card" style="text-align:left;padding:32px;">
+        <h4>Finished-Product Verification</h4>
+        <p>Verification steps help confirm products meet our quality expectations before they reach partners.</p>
+      </div>
+    </div>
+
+    {% if commitment or process_section %}
+    <div class="content-block" style="margin-top:48px;">
+      <h2>{{ process_section.title if process_section else 'Our Commitment' }}</h2>
+      <p>{{ commitment or (process_section.content if process_section else '') }}</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Questions About Quality?</h2>
+    <p>Reach out to discuss our quality processes and how they relate to your requirements.</p>
+    <a href="{{ url_for('public.contact') }}" class="btn btn-white btn-lg">Contact Us</a>
+  </div>
+</section>
+{% endblock %}

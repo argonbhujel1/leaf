@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+{% block title %}Page Content{% endblock %}
+{% block page_title %}Page Content{% endblock %}
+{% block content %}
+{% for page_name, sections in by_page.items() %}
+<div class="admin-card">
+  <div class="admin-card-header"><h2>{{ page_name | title }}</h2></div>
+  <div class="admin-card-body" style="padding:0;">
+    <table class="admin-table">
+      <thead><tr><th>Section</th><th>Title</th><th>Active</th><th></th></tr></thead>
+      <tbody>
+        {% for s in sections %}
+        <tr>
+          <td><code>{{ s.section }}</code></td>
+          <td>{{ s.title or '—' }}</td>
+          <td>{{ 'Yes' if s.is_active else 'No' }}</td>
+          <td><a href="{{ url_for('admin.page_edit', id=s.id) }}" class="btn btn-sm btn-outline">Edit</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

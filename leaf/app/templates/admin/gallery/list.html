@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block page_title %}Gallery{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>Gallery Items</h2>
+    <a href="{{ url_for('admin.gallery_new') }}" class="btn btn-primary btn-sm">Add Image</a>
+  </div>
+  <div class="admin-card-body" style="padding:0;">
+    {% if items %}
+    <table class="admin-table">
+      <thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Featured</th><th>Active</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{% if item.image_path %}<img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="thumb" alt="">{% endif %}</td>
+          <td><strong>{{ item.title }}</strong></td>
+          <td>{{ item.category.name if item.category else '—' }}</td>
+          <td>{{ 'Yes' if item.is_featured else '—' }}</td>
+          <td>{{ 'Yes' if item.is_active else 'No' }}</td>
+          <td class="actions">
+            <a href="{{ url_for('admin.gallery_edit', id=item.id) }}" class="btn btn-sm btn-outline">Edit</a>
+            <form method="POST" action="{{ url_for('admin.gallery_delete', id=item.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="padding:20px;color:#6B7280;">No gallery items yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

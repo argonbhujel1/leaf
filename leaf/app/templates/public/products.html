@@ -1,0 +1,91 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('public.home') }}">Home</a><span>/</span>Products
+    </div>
+    <h1>Our Products</h1>
+    <p>Explore the range of products manufactured by Leafletang Enterprises.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="filters-bar">
+      <form class="search-form" action="{{ url_for('public.products') }}" method="get">
+        {% if active_category %}
+        <input type="hidden" name="category" value="{{ active_category.slug }}">
+        {% endif %}
+        <input type="text" name="q" placeholder="Search products..." value="{{ search or '' }}">
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+      </form>
+      <div class="filter-chips">
+        <a href="{{ url_for('public.products', q=search) }}" class="filter-chip {% if not active_category %}active{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="{{ url_for('public.products', category=cat.slug, q=search) }}" class="filter-chip {% if active_category and active_category.id == cat.id %}active{% endif %}">{{ cat.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if products %}
+    <div class="grid-3">
+      {% for product in products %}
+      <article class="card">
+        <div class="card-img">
+          {% if product.main_image %}
+          <img src="{{ url_for('static', filename='uploads/' + product.main_image) }}" alt="{{ product.name }}" loading="lazy">
+          {% else %}
+          <div style="width:100%;height:100%;background:var(--primary-bg);display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:600;font-size:1.5rem;">{{ product.name[:2]|upper }}</div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <h3 class="card-title"><a href="{{ url_for('public.product_detail', slug=product.slug) }}">{{ product.name }}</a></h3>
+          {% if product.product_code %}<div class="card-meta"><span>{{ product.product_code }}</span></div>{% endif %}
+          {% if product.short_description %}
+          <p class="card-text">{{ product.short_description[:130] }}{% if product.short_description|length > 130 %}...{% endif %}</p>
+          {% endif %}
+          {% if product.category %}
+          <div class="card-meta"><span>{{ product.category.name }}</span></div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <nav class="pagination">
+      {% if pagination.has_prev %}
+      <a href="{{ url_for('public.products', page=pagination.prev_num, category=active_category.slug if active_category else None, q=search) }}">&laquo;</a>
+      {% else %}
+      <span class="disabled">&laquo;</span>
+      {% endif %}
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          {% if p == pagination.page %}
+          <span class="active">{{ p }}</span>
+          {% else %}
+          <a href="{{ url_for('public.products', page=p, category=active_category.slug if active_category else None, q=search) }}">{{ p }}</a>
+          {% endif %}
+        {% else %}
+        <span>…</span>
+        {% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}
+      <a href="{{ url_for('public.products', page=pagination.next_num, category=active_category.slug if active_category else None, q=search) }}">&raquo;</a>
+      {% else %}
+      <span class="disabled">&raquo;</span>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+      <h3>No products found</h3>
+      <p>Products will appear here once published through the admin panel.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

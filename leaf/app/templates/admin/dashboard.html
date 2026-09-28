@@ -1,0 +1,83 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.published_products }}</div>
+    <div class="stat-label">Published Products</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.products }}</div>
+    <div class="stat-label">Total Products</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.news }}</div>
+    <div class="stat-label">News Posts</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.gallery }}</div>
+    <div class="stat-label">Gallery Items</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.inquiries_new }}</div>
+    <div class="stat-label">New Inquiries</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ stats.inquiries_total }}</div>
+    <div class="stat-label">Total Inquiries</div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>Recent Inquiries</h2>
+    <a href="{{ url_for('admin.inquiries') }}" class="btn btn-sm btn-outline">View All</a>
+  </div>
+  <div class="admin-card-body" style="padding:0;">
+    {% if recent_inquiries %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Product/Service</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inq in recent_inquiries %}
+        <tr>
+          <td>{{ inq.name }}</td>
+          <td>{{ inq.email }}</td>
+          <td>{{ inq.product_service or '—' }}</td>
+          <td>
+            <span class="badge badge-{% if inq.status == 'new' %}warning{% elif inq.status == 'replied' %}success{% else %}secondary{% endif %}">{{ inq.status }}</span>
+          </td>
+          <td>{{ inq.created_at.strftime('%b %d, %Y') if inq.created_at else '—' }}</td>
+          <td><a href="{{ url_for('admin.inquiry_detail', id=inq.id) }}" class="btn btn-sm btn-outline">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="padding:20px;color:#6B7280;">No inquiries yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>Quick Actions</h2>
+  </div>
+  <div class="admin-card-body" style="display:flex;gap:12px;flex-wrap:wrap;">
+    <a href="{{ url_for('admin.product_new') }}" class="btn btn-primary">Add Product</a>
+    <a href="{{ url_for('admin.news_new') }}" class="btn btn-primary">Add News</a>
+    <a href="{{ url_for('admin.gallery_new') }}" class="btn btn-primary">Add Gallery Image</a>
+    <a href="{{ url_for('admin.settings') }}" class="btn btn-secondary">Site Settings</a>
+  </div>
+</div>
+{% endblock %}

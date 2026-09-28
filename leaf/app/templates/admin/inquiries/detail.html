@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}Inquiry{% endblock %}
+{% block page_title %}Inquiry Detail{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>Inquiry from {{ inquiry.name }}</h2>
+    <a href="{{ url_for('admin.inquiries') }}" class="btn btn-sm btn-outline">Back</a>
+  </div>
+  <div class="admin-card-body">
+    <table class="admin-table">
+      <tr><th style="width:160px;">Name</th><td>{{ inquiry.name }}</td></tr>
+      <tr><th>Company</th><td>{{ inquiry.company or '—' }}</td></tr>
+      <tr><th>Email</th><td><a href="mailto:{{ inquiry.email }}">{{ inquiry.email }}</a></td></tr>
+      <tr><th>Phone</th><td>{{ inquiry.phone or '—' }}</td></tr>
+      <tr><th>Product / Service</th><td>{{ inquiry.product_service or '—' }}</td></tr>
+      <tr><th>Quantity</th><td>{{ inquiry.quantity or '—' }}</td></tr>
+      <tr><th>Message</th><td style="white-space:pre-wrap;">{{ inquiry.message }}</td></tr>
+      <tr><th>Status</th><td><span class="badge badge-{% if inquiry.status == 'new' %}warning{% elif inquiry.status == 'replied' %}success{% else %}secondary{% endif %}">{{ inquiry.status }}</span></td></tr>
+      <tr><th>Date</th><td>{{ inquiry.created_at.strftime('%Y-%m-%d %H:%M') if inquiry.created_at else '—' }}</td></tr>
+      <tr><th>IP</th><td>{{ inquiry.ip_address or '—' }}</td></tr>
+    </table>
+    
+    <form method="POST" action="{{ url_for('admin.inquiry_status', id=inquiry.id) }}" style="margin-top:24px;display:flex;gap:8px;align-items:center;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label style="font-weight:600;">Update Status:</label>
+      <select name="status" style="padding:6px 12px;border:1px solid #E5E7EB;border-radius:6px;">
+        <option value="new" {% if inquiry.status == 'new' %}selected{% endif %}>New</option>
+        <option value="read" {% if inquiry.status == 'read' %}selected{% endif %}>Read</option>
+        <option value="replied" {% if inquiry.status == 'replied' %}selected{% endif %}>Replied</option>
+        <option value="archived" {% if inquiry.status == 'archived' %}selected{% endif %}>Archived</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm">Update</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %}
+{% block title %}Products{% endblock %}
+{% block page_title %}Products{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>All Products</h2>
+    <a href="{{ url_for('admin.product_new') }}" class="btn btn-primary btn-sm">Add Product</a>
+  </div>
+  <div class="admin-card-body" style="padding:0;">
+    <div style="padding:12px 20px;border-bottom:1px solid #E5E7EB;display:flex;gap:8px;">
+      <a href="{{ url_for('admin.products') }}" class="btn btn-sm {% if not status %}btn-primary{% else %}btn-outline{% endif %}">All</a>
+      <a href="{{ url_for('admin.products', status='published') }}" class="btn btn-sm {% if status == 'published' %}btn-primary{% else %}btn-outline{% endif %}">Published</a>
+      <a href="{{ url_for('admin.products', status='draft') }}" class="btn btn-sm {% if status == 'draft' %}btn-primary{% else %}btn-outline{% endif %}">Draft</a>
+    </div>
+    {% if products %}
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Code</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Featured</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>
+            {% if p.main_image %}
+            <img src="{{ url_for('static', filename='uploads/' + p.main_image) }}" class="thumb" alt="">
+            {% else %}
+            <div class="thumb" style="background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#4CAF50;">N/A</div>
+            {% endif %}
+          </td>
+          <td><strong>{{ p.name }}</strong></td>
+          <td>{{ p.product_code or '—' }}</td>
+          <td>{{ p.category.name if p.category else '—' }}</td>
+          <td><span class="badge badge-{% if p.status == 'published' %}success{% elif p.status == 'draft' %}warning{% else %}secondary{% endif %}">{{ p.status }}</span></td>
+          <td>{{ 'Yes' if p.is_featured else '—' }}</td>
+          <td class="actions">
+            <a href="{{ url_for('admin.product_edit', id=p.id) }}" class="btn btn-sm btn-outline">Edit</a>
+            <form method="POST" action="{{ url_for('admin.product_delete', id=p.id) }}" style="display:inline;" onsubmit="return confirm('Delete this product?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if pagination.pages > 1 %}
+    <div class="pagination" style="padding:16px;">
+      {% if pagination.has_prev %}<a href="{{ url_for('admin.products', page=pagination.prev_num, status=status) }}">&laquo;</a>{% endif %}
+      {% for p in pagination.iter_pages() %}
+        {% if p %}{% if p == pagination.page %}<span class="active">{{ p }}</span>{% else %}<a href="{{ url_for('admin.products', page=p, status=status) }}">{{ p }}</a>{% endif %}
+        {% else %}<span>…</span>{% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}<a href="{{ url_for('admin.products', page=pagination.next_num, status=status) }}">&raquo;</a>{% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p style="padding:20px;color:#6B7280;">No products yet. <a href="{{ url_for('admin.product_new') }}">Add your first product</a>.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

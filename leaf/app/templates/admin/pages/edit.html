@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Edit Page Content{% endblock %}
+{% block page_title %}Edit: {{ content.page }}.{{ content.section }}{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>{{ content.page | title }} → {{ content.section }}</h2>
+    <a href="{{ url_for('admin.pages') }}" class="btn btn-sm btn-outline">Back</a>
+  </div>
+  <div class="admin-card-body">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="form-group"><label>Title</label>{{ form.title() }}</div>
+      <div class="form-group"><label>Content</label>{{ form.content(rows=8) }}</div>
+      <div class="form-check">{{ form.is_active() }} <label>Active</label></div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ url_for('admin.pages') }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

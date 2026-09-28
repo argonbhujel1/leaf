@@ -1,0 +1,12 @@
+{% extends "public/base.html" %}
+{% block title %}Server Error | {{ site_name }}{% endblock %}
+{% block content %}
+<section class="section" style="min-height:50vh;display:flex;align-items:center;">
+  <div class="container text-center">
+    <h1 style="font-size:4rem;color:var(--primary);font-weight:800;">500</h1>
+    <h2 class="section-title">Something Went Wrong</h2>
+    <p class="section-subtitle">We encountered an unexpected error. Please try again later.</p>
+    <a href="{{ url_for('public.home') }}" class="btn btn-primary">Go Home</a>
+  </div>
+</section>
+{% endblock %}

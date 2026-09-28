@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}SEO{% endblock %}
+{% block page_title %}SEO Settings{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header"><h2>Page SEO</h2></div>
+  <div class="admin-card-body" style="padding:0;">
+    <table class="admin-table">
+      <thead><tr><th>Page</th><th>Title</th><th>Description</th><th></th></tr></thead>
+      <tbody>
+        {% for s in settings %}
+        <tr>
+          <td><code>{{ s.page_key }}</code></td>
+          <td>{{ (s.title or '—')[:50] }}</td>
+          <td>{{ (s.description or '—')[:60] }}</td>
+          <td><a href="{{ url_for('admin.seo_edit', id=s.id) }}" class="btn btn-sm btn-outline">Edit</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

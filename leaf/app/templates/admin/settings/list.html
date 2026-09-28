@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Site Settings{% endblock %}
+{% block content %}
+{% for group_name, settings in groups.items() %}
+<div class="admin-card">
+  <div class="admin-card-header"><h2>{{ group_name | replace('_', ' ') | title }}</h2></div>
+  <div class="admin-card-body" style="padding:0;">
+    <table class="admin-table">
+      <thead><tr><th>Setting</th><th>Value</th><th>Type</th><th></th></tr></thead>
+      <tbody>
+        {% for s in settings %}
+        <tr>
+          <td><strong>{{ s.label or s.key }}</strong><br><small style="color:#9CA3AF;">{{ s.key }}</small></td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+            {% if s.value_type == 'image' and s.value %}
+            <img src="{{ url_for('static', filename='uploads/' + s.value) }}" style="height:32px;">
+            {% else %}
+            {{ (s.value or '—')[:80] }}
+            {% endif %}
+          </td>
+          <td>{{ s.value_type }}</td>
+          <td><a href="{{ url_for('admin.setting_edit', key=s.key) }}" class="btn btn-sm btn-outline">Edit</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

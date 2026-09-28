@@ -1,0 +1,62 @@
+{% extends "public/base.html" %}
+
+{% block title %}{{ seo_title }} | {{ site_name }}{% endblock %}
+{% block meta_description %}{{ seo_description or post.short_description or '' }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('public.home') }}">Home</a><span>/</span>
+      <a href="{{ url_for('public.news') }}">News</a><span>/</span>
+      {{ post.title[:40] }}{% if post.title|length > 40 %}...{% endif %}
+    </div>
+    <h1>{{ post.title }}</h1>
+    <p>
+      {% if post.published_at %}{{ post.published_at.strftime('%B %d, %Y') }}{% endif %}
+      {% if post.author %} · {{ post.author }}{% endif %}
+      {% if post.category %} · {{ post.category.name }}{% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    {% if post.cover_image %}
+    <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:32px;border:1px solid var(--border);">
+      <img src="{{ url_for('static', filename='uploads/' + post.cover_image) }}" alt="{{ post.title }}" style="width:100%;" loading="lazy">
+    </div>
+    {% endif %}
+    
+    {% if post.short_description %}
+    <p style="font-size:1.15rem;color:var(--text-muted);margin-bottom:24px;line-height:1.7;">{{ post.short_description }}</p>
+    {% endif %}
+    
+    <div class="content-block">
+      {% if post.content %}
+      {{ post.content | replace('\n', '<br>') | safe }}
+      {% endif %}
+    </div>
+
+    <div style="margin-top:40px;">
+      <a href="{{ url_for('public.news') }}" class="btn btn-outline">&larr; Back to News</a>
+    </div>
+
+    {% if related %}
+    <div style="margin-top:64px;">
+      <h2 class="section-title">Related Updates</h2>
+      <div class="grid-3" style="margin-top:24px;">
+        {% for r in related %}
+        <article class="card">
+          <div class="card-body">
+            <h3 class="card-title"><a href="{{ url_for('public.news_detail', slug=r.slug) }}">{{ r.title }}</a></h3>
+            {% if r.published_at %}<div class="card-meta"><span>{{ r.published_at.strftime('%b %d, %Y') }}</span></div>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

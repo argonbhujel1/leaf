@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Inquiries{% endblock %}
+{% block page_title %}Business Inquiries{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header"><h2>Inquiries</h2></div>
+  <div class="admin-card-body" style="padding:0;">
+    <div style="padding:12px 20px;border-bottom:1px solid #E5E7EB;display:flex;gap:8px;">
+      <a href="{{ url_for('admin.inquiries') }}" class="btn btn-sm {% if not status %}btn-primary{% else %}btn-outline{% endif %}">All</a>
+      <a href="{{ url_for('admin.inquiries', status='new') }}" class="btn btn-sm {% if status == 'new' %}btn-primary{% else %}btn-outline{% endif %}">New</a>
+      <a href="{{ url_for('admin.inquiries', status='read') }}" class="btn btn-sm {% if status == 'read' %}btn-primary{% else %}btn-outline{% endif %}">Read</a>
+      <a href="{{ url_for('admin.inquiries', status='replied') }}" class="btn btn-sm {% if status == 'replied' %}btn-primary{% else %}btn-outline{% endif %}">Replied</a>
+    </div>
+    {% if inquiries %}
+    <table class="admin-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Product</th><th>Status</th><th>Date</th><th></th></tr></thead>
+      <tbody>
+        {% for inq in inquiries %}
+        <tr>
+          <td><strong>{{ inq.name }}</strong></td>
+          <td>{{ inq.email }}</td>
+          <td>{{ inq.company or '—' }}</td>
+          <td>{{ inq.product_service or '—' }}</td>
+          <td><span class="badge badge-{% if inq.status == 'new' %}warning{% elif inq.status == 'replied' %}success{% else %}secondary{% endif %}">{{ inq.status }}</span></td>
+          <td>{{ inq.created_at.strftime('%b %d, %Y %H:%M') if inq.created_at else '—' }}</td>
+          <td><a href="{{ url_for('admin.inquiry_detail', id=inq.id) }}" class="btn btn-sm btn-outline">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="padding:20px;color:#6B7280;">No inquiries yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

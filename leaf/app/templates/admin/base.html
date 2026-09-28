@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} | Leafletang CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <a href="{{ url_for('admin.dashboard') }}">Leafletang CMS</a>
+      <small>Public Website Admin</small>
+    </div>
+    <nav class="admin-nav">
+      <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}">Dashboard</a>
+      
+      <div class="nav-section">Content</div>
+      <a href="{{ url_for('admin.products') }}" class="{% if 'product' in (request.endpoint or '') %}active{% endif %}">Products</a>
+      <a href="{{ url_for('admin.categories') }}" class="{% if 'categor' in (request.endpoint or '') %}active{% endif %}">Categories</a>
+      <a href="{{ url_for('admin.news_list') }}" class="{% if 'news' in (request.endpoint or '') %}active{% endif %}">News</a>
+      <a href="{{ url_for('admin.gallery_list') }}" class="{% if 'gallery' in (request.endpoint or '') %}active{% endif %}">Gallery</a>
+      <a href="{{ url_for('admin.pages') }}" class="{% if 'page' in (request.endpoint or '') %}active{% endif %}">Page Content</a>
+      
+      <div class="nav-section">Inquiries</div>
+      <a href="{{ url_for('admin.inquiries') }}" class="{% if 'inquir' in (request.endpoint or '') %}active{% endif %}">Inquiries</a>
+      
+      <div class="nav-section">Settings</div>
+      <a href="{{ url_for('admin.settings') }}" class="{% if 'setting' in (request.endpoint or '') %}active{% endif %}">Site Settings</a>
+      <a href="{{ url_for('admin.seo_list') }}" class="{% if 'seo' in (request.endpoint or '') %}active{% endif %}">SEO</a>
+      
+      <div class="nav-section">External</div>
+      <a href="{{ url_for('public.home') }}" target="_blank">View Website ↗</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{{ url_for('admin.logout') }}">Logout ({{ current_user.username }})</a>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+      <div class="user-info">
+        {{ current_user.full_name or current_user.username }}
+      </div>
+    </div>
+    <div class="admin-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

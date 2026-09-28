@@ -1,0 +1,69 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('public.home') }}">Home</a><span>/</span>Manufacturing
+    </div>
+    <h1>Manufacturing</h1>
+    <p>An overview of our manufacturing process and capabilities.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="content-block">
+      <h2>{{ overview_section.title if overview_section else 'Our Manufacturing Process' }}</h2>
+      <p>{{ overview or (overview_section.content if overview_section else '') }}</p>
+    </div>
+
+    <div class="content-block" style="margin-top:48px;">
+      <h2>{{ workflow_section.title if workflow_section else 'Process Overview' }}</h2>
+      <p class="mb-6">{{ workflow or (workflow_section.content if workflow_section else 'Raw Materials → Production → Quality Inspection → Grading → Finished Product → Dispatch') }}</p>
+      
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">1</div>
+          <h4>Raw Materials</h4>
+          <p>Quality inputs selected for production</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">2</div>
+          <h4>Production</h4>
+          <p>Manufacturing in our own facilities</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">3</div>
+          <h4>Quality Inspection</h4>
+          <p>Systematic product checking</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">4</div>
+          <h4>Grading</h4>
+          <p>Classification by quality standards</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">5</div>
+          <h4>Finished Product</h4>
+          <p>Products ready for partners</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">6</div>
+          <h4>Dispatch</h4>
+          <p>Delivery to customers</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Interested in Our Capabilities?</h2>
+    <p>Contact us to discuss your requirements and how we can support your needs.</p>
+    <a href="{{ url_for('public.contact') }}" class="btn btn-white btn-lg">Get In Touch</a>
+  </div>
+</section>
+{% endblock %}

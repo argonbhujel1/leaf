@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Categories{% endblock %}
+{% block page_title %}Product Categories{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>Categories</h2>
+    <a href="{{ url_for('admin.category_new') }}" class="btn btn-primary btn-sm">Add Category</a>
+  </div>
+  <div class="admin-card-body" style="padding:0;">
+    {% if categories %}
+    <table class="admin-table">
+      <thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Active</th><th>Order</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for c in categories %}
+        <tr>
+          <td><strong>{{ c.name }}</strong></td>
+          <td>{{ c.slug }}</td>
+          <td>{{ c.products.count() }}</td>
+          <td>{{ 'Yes' if c.is_active else 'No' }}</td>
+          <td>{{ c.sort_order }}</td>
+          <td class="actions">
+            <a href="{{ url_for('admin.category_edit', id=c.id) }}" class="btn btn-sm btn-outline">Edit</a>
+            <form method="POST" action="{{ url_for('admin.category_delete', id=c.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="padding:20px;color:#6B7280;">No categories yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

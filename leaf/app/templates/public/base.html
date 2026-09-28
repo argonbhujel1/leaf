@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ seo.title if seo and seo.title else site_name }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ seo.description if seo and seo.description else site_tagline }}{% endblock %}">
+  {% if seo and seo.keywords %}<meta name="keywords" content="{{ seo.keywords }}">{% endif %}
+  <meta name="robots" content="{{ seo.robots if seo and seo.robots else 'index, follow' }}">
+  <link rel="canonical" href="{% block canonical %}{{ site_url }}{{ request.path }}{% endblock %}">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ seo.og_title if seo and seo.og_title else (seo.title if seo else site_name) }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ seo.og_description if seo and seo.og_description else (seo.description if seo else site_tagline) }}{% endblock %}">
+  <meta property="og:url" content="{{ site_url }}{{ request.path }}">
+  <meta property="og:site_name" content="{{ site_name }}">
+  {% block og_image %}{% if seo and seo.og_image %}<meta property="og:image" content="{{ site_url }}/static/uploads/{{ seo.og_image }}">{% endif %}{% endblock %}
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ self.og_title() }}">
+  <meta name="twitter:description" content="{{ self.og_description() }}">
+  
+  {% if site_logo %}
+  <link rel="icon" href="{{ url_for('static', filename='uploads/' + site_logo) }}" type="image/png">
+  {% endif %}
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  
+  {% block structured_data %}{% endblock %}
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{{ url_for('public.home') }}" class="logo">
+        {% if site_logo %}
+        <img src="{{ url_for('static', filename='uploads/' + site_logo) }}" alt="{{ site_name }}" height="40">
+        {% else %}
+        <span class="logo-text"><span>Leafletang</span> Enterprises</span>
+        {% endif %}
+      </a>
+      
+      <nav class="nav-main" id="mainNav">
+        <a href="{{ url_for('public.home') }}">Home</a>
+        <a href="{{ url_for('public.about') }}">About</a>
+        <a href="{{ url_for('public.products') }}">Products</a>
+        <a href="{{ url_for('public.manufacturing') }}">Manufacturing</a>
+        <a href="{{ url_for('public.quality') }}">Quality</a>
+        <a href="{{ url_for('public.gallery') }}">Gallery</a>
+        <a href="{{ url_for('public.news') }}">News</a>
+        <a href="{{ url_for('public.contact') }}">Contact</a>
+      </nav>
+      
+      <div class="header-actions">
+        <button class="nav-toggle" aria-label="Toggle navigation" type="button">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="container" style="padding-top:16px;">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Main content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-text">{{ site_name }}</span>
+          <p>{{ site_tagline }}</p>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="{{ url_for('public.about') }}">About Us</a>
+          <a href="{{ url_for('public.manufacturing') }}">Manufacturing</a>
+          <a href="{{ url_for('public.quality') }}">Quality</a>
+          <a href="{{ url_for('public.gallery') }}">Gallery</a>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <a href="{{ url_for('public.products') }}">All Products</a>
+          {% for cat in product_categories[:5] %}
+          <a href="{{ url_for('public.products', category=cat.slug) }}">{{ cat.name }}</a>
+          {% endfor %}
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <a href="{{ url_for('public.contact') }}">Contact Us</a>
+          <a href="{{ url_for('public.news') }}">News</a>
+          {% if social_facebook %}<a href="{{ social_facebook }}" target="_blank" rel="noopener">Facebook</a>{% endif %}
+          {% if social_linkedin %}<a href="{{ social_linkedin }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024–2026 {{ site_name }}. All rights reserved.</span>
+        <span>Engineered by <a href="https://argan.com.np" target="_blank" rel="noopener">Argon Bhujel</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" role="button" tabindex="0" aria-label="Close">&times;</span>
+    <img src="" alt="">
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}News{% endblock %}
+{% block page_title %}News Posts{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header">
+    <h2>News Posts</h2>
+    <a href="{{ url_for('admin.news_new') }}" class="btn btn-primary btn-sm">Add Post</a>
+  </div>
+  <div class="admin-card-body" style="padding:0;">
+    {% if posts %}
+    <table class="admin-table">
+      <thead><tr><th>Title</th><th>Status</th><th>Author</th><th>Published</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for p in posts %}
+        <tr>
+          <td><strong>{{ p.title }}</strong></td>
+          <td><span class="badge badge-{% if p.status == 'published' %}success{% elif p.status == 'draft' %}warning{% else %}secondary{% endif %}">{{ p.status }}</span></td>
+          <td>{{ p.author or '—' }}</td>
+          <td>{{ p.published_at.strftime('%b %d, %Y') if p.published_at else '—' }}</td>
+          <td class="actions">
+            <a href="{{ url_for('admin.news_edit', id=p.id) }}" class="btn btn-sm btn-outline">Edit</a>
+            <form method="POST" action="{{ url_for('admin.news_delete', id=p.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p style="padding:20px;color:#6B7280;">No news posts yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

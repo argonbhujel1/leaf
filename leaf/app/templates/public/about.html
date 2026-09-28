@@ -1,0 +1,64 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('public.home') }}">Home</a><span>/</span>About
+    </div>
+    <h1>About Us</h1>
+    <p>Learn about Leafletang Enterprises, our mission, and our commitment to quality manufacturing.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="content-block">
+      <h2>{{ sections.intro.title if sections.intro else 'Who We Are' }}</h2>
+      <p>{{ about_intro or (sections.intro.content if sections.intro else '') }}</p>
+    </div>
+
+    <div class="grid-2" style="margin-top:48px;">
+      <div class="content-block">
+        <h2>{{ sections.mission.title if sections.mission else 'Our Mission' }}</h2>
+        <p>{{ about_mission or (sections.mission.content if sections.mission else '') }}</p>
+      </div>
+      <div class="content-block">
+        <h2>{{ sections.vision.title if sections.vision else 'Our Vision' }}</h2>
+        <p>{{ about_vision or (sections.vision.content if sections.vision else '') }}</p>
+      </div>
+    </div>
+
+    {% if about_values or (sections.values and sections.values.content) %}
+    <div class="content-block" style="margin-top:48px;">
+      <h2>{{ sections.values.title if sections.values else 'Core Values' }}</h2>
+      <div class="values-grid">
+        {% set vals = (about_values or sections.values.content or '').split('•') if '•' in (about_values or sections.values.content or '') else (about_values or sections.values.content or '').split(',') %}
+        {% for v in vals %}
+        {% if v.strip() %}
+        <div class="value-card">
+          <h4>{{ v.strip() }}</h4>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if about_philosophy %}
+    <div class="content-block" style="margin-top:48px;">
+      <h2>Manufacturing Philosophy</h2>
+      <p>{{ about_philosophy }}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Partner With Us</h2>
+    <p>Interested in working with Leafletang Enterprises? We welcome business inquiries.</p>
+    <a href="{{ url_for('public.contact') }}" class="btn btn-white btn-lg">Contact Us</a>
+  </div>
+</section>
+{% endblock %}
